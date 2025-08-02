@@ -1,0 +1,25 @@
+- name: Install docker
+  apt:
+    name: ['docker.io', 'docker-compose']
+    state: present
+    update_cache: yes
+
+- name: Ensure Docker is running
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Create root working directory
+  file:
+    path: /home/{{ ansible_user }}/cloud
+    state: directory
+
+- name: Create working directorys
+  file:
+    path: /home/{{ ansible_user }}/cloud/{{ item }}
+    state: directory      
+  with_items:
+    - mariadb
+    - wordpress
+    - nginx

@@ -1,0 +1,22 @@
+
+- name: Ensure volumes directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "/home/{{ ansible_user }}/data/db"
+
+- name: Copy docker-compose.yml and .env files
+  copy:
+    src: "{{ item }}"
+    dest: "/home/{{ ansible_user }}/cloud/{{ item }}"
+  with_items:
+    - docker-compose.yml
+    - .env
+
+- name: Start containers using docker_compose module
+  community.docker.docker_compose:
+    project_src: /home/{{ ansible_user }}/cloud
+    files:
+      - docker-compose.yml
+    state: present
