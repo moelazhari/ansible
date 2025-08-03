@@ -1,0 +1,24 @@
+---
+- name: Copy nginx Dockerfile and configuration files
+  copy:
+    src: "{{ item }}"
+    dest: "/home/{{ ansible_user }}/cloud/nginx/{{ item }}"
+  with_items:
+    - Dockerfile
+    - nginx.conf
+
+- name: Copy SSL certificates directory
+  copy:
+    src: sslCert/
+    dest: "/home/{{ ansible_user }}/cloud/nginx/sslCert/"
+    mode: '0600'
+
+- name: Build nginx Docker image
+  community.docker.docker_image:
+    source: build
+    build:
+      path: "/home/{{ ansible_user }}/cloud/nginx"
+    name: "custom-nginx"
+    tag: "latest"
+    state: present
+    force_source: yes

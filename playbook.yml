@@ -8,4 +8,6 @@
   roles:
     - setup
     - mariadb
+    - wordpress
+    - nginx
     - run

@@ -1,0 +1,19 @@
+---
+- name: Copy WordPress Dockerfile and scripts
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/home/{{ ansible_user }}/cloud/wordpress/{{ item }}"
+  with_items:
+    - Dockerfile
+    - wp.sh
+    - www.conf
+
+- name: Build WordPress Docker image
+  community.docker.docker_image:
+    source: build
+    build:
+      path: "/home/{{ ansible_user }}/cloud/wordpress"
+    name: "custom-wp"
+    tag: "latest"
+    state: present
+    force_source: yes

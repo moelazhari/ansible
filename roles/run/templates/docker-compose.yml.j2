@@ -1,0 +1,60 @@
+services:
+  mariadb:
+    container_name: mariadb
+    image: custom-mariadb:latest
+    volumes:
+      - db:/var/lib/mysql
+    env_file: .env
+    networks:
+      - web
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD"]
+      timeout: 10s
+      retries: 10
+
+  wordpress:
+    container_name: wordpress
+    image: custom-wp:latest
+    env_file: .env
+    volumes:
+      - wp:/var/www/html
+    networks:
+      - web
+    restart: always
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  nginx:
+    container_name: nginx
+    image: custom-nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - wp:/var/www/html:ro
+    networks:
+      - web
+    restart: always
+    depends_on:
+      - wordpress
+
+volumes:
+  db:
+    name: db
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/{{ ansible_user }}/data/db
+  wp:
+    name: wp
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/{{ ansible_user }}/data/wp
+
+networks:
+  web:

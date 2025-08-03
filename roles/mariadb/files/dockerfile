@@ -1,13 +1,14 @@
-FROM debian:buster
+FROM debian:bullseye
 
 RUN apt-get -y update \
-    && apt-get install -y mariadb-server \
+    && apt-get install -y mariadb-server mariadb-client \
+    && rm -rf /var/lib/apt/lists/* \
     && mysql_install_db
 
-COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/
+# Fix bind-address to allow external connections
+RUN sed -i 's/bind-address.*= 127.0.0.1/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
 
-COPY ./tools/init_script.sh .
-
+COPY ./init_script.sh .
 RUN chmod +x ./init_script.sh
 
 ENTRYPOINT ["./init_script.sh"]

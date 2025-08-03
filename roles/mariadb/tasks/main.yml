@@ -1,10 +1,4 @@
 ---
-- name: Create mariadb working directory
-  file:
-    path: /home/{{ ansible_user }}/cloud/mariadb
-    state: directory
-    mode: '0755'
-
 - name: Copy MariaDB Dockerfile and init_script files
   copy:
     src: "{{ item }}"
@@ -14,10 +8,11 @@
     - init_script.sh
 
 - name: Build mariadb Docker image
-  docker_image:
+  community.docker.docker_image:
     source: build
     build:
-      path: "/home/{{ ansible_user }}/cloud/mariadb" 
-    name: mariadb
-    tag: 6969
+      path: "/home/{{ ansible_user }}/cloud/mariadb"
+    name: "custom-mariadb"
+    tag: "latest"
     state: present
+    force_source: yes
