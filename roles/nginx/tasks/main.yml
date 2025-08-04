@@ -6,12 +6,7 @@
   with_items:
     - Dockerfile
     - nginx.conf
-
-- name: Copy SSL certificates directory
-  copy:
-    src: sslCert/
-    dest: "/home/{{ ansible_user }}/cloud/nginx/sslCert/"
-    mode: '0600'
+    - ssl.sh
 
 - name: Build nginx Docker image
   community.docker.docker_image:

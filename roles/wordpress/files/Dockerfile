@@ -1,10 +1,10 @@
 FROM debian:bullseye
 
-RUN apt update -y\
-    && apt install curl php-fpm php-mysql mariadb-client sendmail netcat -y\
+RUN apt update -y \
+    && apt install curl php-fpm php-mysql mariadb-client sendmail -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar\ 
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \ 
     && chmod +x wp-cli.phar\
     && mv wp-cli.phar /usr/local/bin/wp \
     && mkdir -p /var/www/html && cd /var/www/html\
