@@ -1,5 +1,5 @@
 ---
-- name: Deploy incaption
+- name: Deploy inception
   hosts: all
   become: yes
   vars:

@@ -4,20 +4,16 @@
     path: "{{ item }}"
     state: directory
   with_items:
-    - "/home/{{ ansible_user }}/data/db"
-    - "/home/{{ ansible_user }}/data/wp"
+    - /home/{{ ansible_user }}/data/db
+    - /home/{{ ansible_user }}/data/wp
 
-- name: Copy docker-compose.yml template
+- name: Copy docker-compose.yml and .env template
   template:
-    src: docker-compose.yml.j2
-    dest: /home/{{ ansible_user }}/cloud/docker-compose.yml
-    mode: '0644'
-
-- name: Copy .env file
-  copy:
-    src: .env
-    dest: /home/{{ ansible_user }}/cloud/.env
-    mode: '0640'
+    src: "{{ item.src }}"
+    dest: "/home/{{ ansible_user }}/cloud/{{ item.dest }}"
+  with_items:
+    - { src: "docker-compose.yml.j2", dest: "docker-compose.yml" }
+    - { src: ".env.j2", dest: ".env" }
 
 - name: Start containers using docker_compose module
   community.docker.docker_compose_v2:
